@@ -98,3 +98,23 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
                 os.remove(full_path)
     os.rmdir(temp_dir_path)
     return (output.decode("utf-8"), exit_code)
+
+
+def check_output(solution: str, output: str) -> bool:
+    """Check if program's output is correct.
+
+    Parameters
+    ----------
+    solution
+        Sample output taken from BOJ.
+    output
+        Output from program run.
+
+    Returns
+    -------
+    bool
+        True if correct, False if wrong.
+    """
+    solution_lines = [x.rstrip() for x in solution.rstrip().split("\n")]
+    output_lines = [x.rstrip() for x in output.rstrip().split("\n")]
+    return all([x == y for x, y in zip(solution_lines, output_lines)])
