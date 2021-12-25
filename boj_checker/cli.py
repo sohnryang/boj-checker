@@ -1,5 +1,8 @@
 from pathlib import Path
 from typing import List
+from xdg import xdg_config_home
+
+from .config import CheckerConfig
 from .runner import check_output, clean_temporary_files, run_source_file
 from .boj_parser import fetch_sample_io
 
@@ -31,12 +34,19 @@ def main(args: List[str]):
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
+    config_file_path = xdg_config_home() / "boj-checker/config.json"
+    try:
+        config = CheckerConfig.fromfilepath(config_file_path)
+    except FileNotFoundError:
+        config = CheckerConfig('{"language_configs": []}')
     print(f"Testing code for {len(samples)} sample{'s' if len(samples) > 1 else ''}")
     for i, sample in enumerate(samples):
         print(f"Testing sample #{i}: ", end="")
         input_str, solution = sample
         try:
-            output, exit_code = run_source_file(filepath, input_str)
+            output, exit_code = run_source_file(
+                filepath, input_str, config.languageconfig_table
+            )
         except NotImplementedError:
             print(f"{colorama.Fore.BLUE}Unknown language{colorama.Style.RESET_ALL}")
             break

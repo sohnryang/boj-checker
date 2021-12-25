@@ -1,6 +1,8 @@
 from pathlib import Path
 from subprocess import Popen, PIPE
-from typing import Tuple
+from typing import Dict, Tuple
+
+from boj_checker.config import LanguageConfig
 from .languageinfo import extension_lookup
 
 import hashlib
@@ -42,7 +44,9 @@ def temporary_dir_root() -> Path:
     return Path("/tmp")  # TODO: support other OSes other than Linux
 
 
-def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
+def run_source_file(
+    filepath: Path, input_str: str, user_language_config: Dict[str, LanguageConfig]
+) -> Tuple[str, int]:
     """Run a source file from given path, getting input from `input_str`.
 
     Parameters
@@ -51,6 +55,9 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
         The path of the source file to run.
     input_str
         The input to provide.
+    user_language_config
+        Dictionary mapping extension to LanguageConfig object, for custom
+        settings.
 
     Returns
     -------
@@ -72,7 +79,10 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
         pass
     file_extension = filepath.suffix[1:]
     try:
-        language_info = extension_lookup[file_extension]
+        if file_extension in user_language_config:
+            language_info = user_language_config[file_extension]
+        else:
+            language_info = extension_lookup[file_extension]
     except KeyError:
         raise NotImplementedError(f"Not implemented for extension: {file_extension}")
 
