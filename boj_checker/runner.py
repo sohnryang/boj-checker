@@ -2,7 +2,7 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from typing import Dict, Tuple
 
-from boj_checker.config import LanguageConfig
+from .config import LanguageConfig
 from .languageinfo import extension_lookup
 
 import hashlib
