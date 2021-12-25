@@ -37,6 +37,12 @@ def main(args: List[str]):
         input_str, solution = sample
         try:
             output, exit_code = run_source_file(filepath, input_str)
+        except NotImplementedError:
+            print(f"{colorama.Fore.BLUE}Unknown language{colorama.Style.RESET_ALL}")
+            break
+        except ValueError:
+            print(f"{colorama.Fore.BLUE}Compilation Error{colorama.Style.RESET_ALL}")
+            break
         finally:
             clean_temporary_files(filepath)
 
