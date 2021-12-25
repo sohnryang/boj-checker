@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List
 from xdg import xdg_config_home
 
+from . import __version__
 from .config import CheckerConfig
 from .runner import check_output, clean_temporary_files, run_source_file
 from .boj_parser import fetch_sample_io
@@ -25,6 +26,7 @@ def main(args: List[str]):
     """
     colorama.init()
     parser = argparse.ArgumentParser(description="Check solutions against sample IO.")
+    parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "probno", metavar="PROB_ID", type=int, help="The problem ID for solution"
     )
