@@ -1,5 +1,5 @@
 from pathlib import Path
-from subprocess import Popen, PIPE
+from subprocess import DEVNULL, Popen, PIPE
 from typing import Dict, Tuple
 
 from .config import LanguageConfig
@@ -91,7 +91,11 @@ def run_source_file(
             language_info.run_command(filepath, Path()), stdout=PIPE, stdin=PIPE
         )
     elif language_info.language_type == "fixed_exec":
-        compile_process = Popen(language_info.compile_command(filepath, temp_dir_path))
+        compile_process = Popen(
+            language_info.compile_command(filepath, temp_dir_path),
+            stdout=DEVNULL,
+            stderr=DEVNULL,
+        )
         exit_code = compile_process.wait()
         if exit_code != 0:
             raise ValueError(f"Compilation of source {filepath} failed")
@@ -103,7 +107,9 @@ def run_source_file(
         )
     else:
         compile_process = Popen(
-            language_info.compile_command(filepath, temp_dir_path / "a.out")
+            language_info.compile_command(filepath, temp_dir_path / "a.out"),
+            stdout=DEVNULL,
+            stderr=DEVNULL,
         )
         exit_code = compile_process.wait()
         if exit_code != 0:
