@@ -15,7 +15,6 @@ def main(args: List[str]):
     args
         command line arguments supplied to the tool
 
-
     Returns
     -------
     int
