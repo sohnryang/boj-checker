@@ -61,6 +61,8 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
     ------
     NotImplementedError
         If this function cannot handle the filetype of the source.
+    ValueError
+        If the compilation of the source code is failed.
     """
     dirname = generate_dirname(filepath)
     temp_dir_path = temporary_dir_root() / dirname
