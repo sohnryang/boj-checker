@@ -66,7 +66,10 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
     """
     dirname = generate_dirname(filepath)
     temp_dir_path = temporary_dir_root() / dirname
-    os.mkdir(temp_dir_path)
+    try:
+        os.mkdir(temp_dir_path)
+    except FileExistsError:
+        pass
     file_extension = filepath.suffix[1:]
     try:
         language_info = extension_lookup[file_extension]
