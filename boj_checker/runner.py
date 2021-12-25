@@ -104,13 +104,28 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
     output, _ = process.communicate(input=input_str.encode("utf-8"))
     exit_code = process.wait()
 
+    return (output.decode("utf-8"), exit_code)
+
+
+def clean_temporary_files(filepath: Path):
+    """Clean up a temporary directory created when running source in `filepath`
+
+    Parameters
+    ----------
+    filepath
+        Path of the source.
+    """
+    dirname = generate_dirname(filepath)
+    temp_dir_path = temporary_dir_root() / dirname
     for path, _, filenames in os.walk(temp_dir_path):
         for filename in filenames:
             full_path = os.path.join(path, filename)
             if os.path.exists(full_path):
                 os.remove(full_path)
-    os.rmdir(temp_dir_path)
-    return (output.decode("utf-8"), exit_code)
+    try:
+        os.rmdir(temp_dir_path)
+    except FileNotFoundError:
+        pass
 
 
 def check_output(solution: str, output: str) -> bool:
