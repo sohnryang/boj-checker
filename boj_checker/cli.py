@@ -42,7 +42,8 @@ def main(args: List[str]):
             print(f"{colorama.Fore.GREEN}AC{colorama.Style.RESET_ALL}")
         else:
             print(f"{colorama.Fore.RED}WA{colorama.Style.RESET_ALL}")
-            print("Expected output:")
+            print(f"Expected output >>>{colorama.Fore.GREEN}")
             print(solution)
-            print("\nActual output:")
+            print(f"{colorama.Style.RESET_ALL}\nActual output >>>{colorama.Fore.RED}")
             print(output)
+            print(colorama.Style.RESET_ALL)
