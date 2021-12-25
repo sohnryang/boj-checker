@@ -1,5 +1,5 @@
 from pathlib import Path
-from boj_checker.config import CheckerConfig, LanguageConfig
+from boj_checker.config import LanguageConfig
 
 import unittest
 
