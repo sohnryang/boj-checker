@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List
-from .runner import check_output, run_source_file
+from .runner import check_output, clean_temporary_files, run_source_file
 from .boj_parser import fetch_sample_io
 
 import argparse
@@ -35,7 +35,11 @@ def main(args: List[str]):
     for i, sample in enumerate(samples):
         print(f"Testing sample #{i}: ", end="")
         input_str, solution = sample
-        output, exit_code = run_source_file(filepath, input_str)
+        try:
+            output, exit_code = run_source_file(filepath, input_str)
+        finally:
+            clean_temporary_files(filepath)
+
         if exit_code != 0:
             print(f"{colorama.Fore.RED}RTE{colorama.Style.RESET_ALL}")
         elif check_output(solution, output):
