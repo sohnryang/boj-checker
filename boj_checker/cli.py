@@ -1,9 +1,10 @@
-import argparse
-import colorama
 from pathlib import Path
 from typing import List
 from .runner import check_output, run_source_file
 from .boj_parser import fetch_sample_io
+
+import argparse
+import colorama
 
 
 def main(args: List[str]):

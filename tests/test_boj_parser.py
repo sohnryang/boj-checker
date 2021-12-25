@@ -1,5 +1,6 @@
-import unittest
 from boj_checker.boj_parser import fetch_sample_io
+
+import unittest
 
 
 class TestBOJParser(unittest.TestCase):

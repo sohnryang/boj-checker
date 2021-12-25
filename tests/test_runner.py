@@ -1,5 +1,6 @@
-import unittest
 from boj_checker.runner import check_output
+
+import unittest
 
 
 class TestRunner(unittest.TestCase):
