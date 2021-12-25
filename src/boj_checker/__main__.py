@@ -1,7 +1,4 @@
-"""BOJ checker -- check solutions against IO samples"""
-
-import sys
-from .cli import main
+from . import entry
 
 if __name__ == "__main__":
-    exit(main(sys.argv[1:]))
+    entry()
