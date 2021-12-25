@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Callable, List, NamedTuple, Union
+from .config import LanguageConfig
 
 
 class LanguageInfo(NamedTuple):
@@ -9,47 +10,24 @@ class LanguageInfo(NamedTuple):
 
 
 extension_lookup = {
-    "py": LanguageInfo(
-        "scripted", None, lambda source_path: ["python3", str(source_path.absolute())]
+    "py": LanguageConfig("scripted", [], ["python3", "{source_path}"]),
+    "c": LanguageConfig(
+        "compiled", ["gcc", "{source_path}", "-o", "{exec_path}"], ["{exec_path}"]
     ),
-    "c": LanguageInfo(
-        "compiled",
-        lambda source_path, exec_path: [
-            "gcc",
-            str(source_path.absolute()),
-            "-o",
-            str(exec_path.absolute()),
-        ],
-        lambda exec_path: [str(exec_path.absolute())],
+    "cc": LanguageConfig(
+        "compiled", ["g++", "{source_path}", "-o", "{exec_path}"], ["{exec_path}"]
     ),
-    "cc": LanguageInfo(
-        "compiled",
-        lambda source_path, exec_path: [
-            "g++",
-            str(source_path.absolute()),
-            "-o",
-            str(exec_path.absolute()),
-        ],
-        lambda exec_path: [str(exec_path.absolute())],
-    ),
-    "java": LanguageInfo(
+    "java": LanguageConfig(
         "fixed_exec",
-        lambda source_path, exec_dir: [
+        [
             "javac",
-            str(source_path.absolute()),
+            "{source_path}",
             "-d",
-            str(exec_dir.absolute()),
+            "{exec_path}",
         ],
-        lambda _: ["java", "Main"],
+        ["java", "Main"],
     ),
-    "rs": LanguageInfo(
-        "compiled",
-        lambda source_path, exec_path: [
-            "rustc",
-            str(source_path.absolute()),
-            "-o",
-            str(exec_path.absolute()),
-        ],
-        lambda exec_path: [str(exec_path.absolute())],
+    "rs": LanguageConfig(
+        "compiled", ["rustc", "{source_path}", "-o", "{exec_path}"], ["{exec_path}"]
     ),
 }

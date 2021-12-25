@@ -67,26 +67,37 @@ def run_source_file(filepath: Path, input_str: str) -> Tuple[str, int]:
     os.mkdir(temp_dir_path)
     file_extension = filepath.suffix[1:]
     try:
-        language_type, compile_command, run_command = extension_lookup[file_extension]
+        language_info = extension_lookup[file_extension]
     except KeyError:
         raise NotImplementedError(f"Not implemented for extension: {file_extension}")
 
-    if language_type == "scripted":
-        process = Popen(run_command(filepath), stdout=PIPE, stdin=PIPE)
-    elif language_type == "fixed_exec":
-        assert compile_command != None
-        compile_process = Popen(compile_command(filepath, temp_dir_path))
+    if language_info.language_type == "scripted":
+        process = Popen(
+            language_info.run_command(filepath, Path()), stdout=PIPE, stdin=PIPE
+        )
+    elif language_info.language_type == "fixed_exec":
+        compile_process = Popen(language_info.compile_command(filepath, temp_dir_path))
         exit_code = compile_process.wait()
         if exit_code != 0:
             raise ValueError(f"Compilation of source {filepath} failed")
-        process = Popen(run_command(Path()), stdout=PIPE, stdin=PIPE, cwd=temp_dir_path)
+        process = Popen(
+            language_info.run_command(Path(), Path()),
+            stdout=PIPE,
+            stdin=PIPE,
+            cwd=temp_dir_path,
+        )
     else:
-        assert compile_command != None
-        compile_process = Popen(compile_command(filepath, temp_dir_path / "a.out"))
+        compile_process = Popen(
+            language_info.compile_command(filepath, temp_dir_path / "a.out")
+        )
         exit_code = compile_process.wait()
         if exit_code != 0:
             raise ValueError(f"Compilation of source {filepath} failed")
-        process = Popen(run_command(temp_dir_path / "a.out"), stdout=PIPE, stdin=PIPE)
+        process = Popen(
+            language_info.run_command(Path(), temp_dir_path / "a.out"),
+            stdout=PIPE,
+            stdin=PIPE,
+        )
 
     output, _ = process.communicate(input=input_str.encode("utf-8"))
     exit_code = process.wait()
