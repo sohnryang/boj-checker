@@ -29,7 +29,9 @@ def main(args: List[str]):
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
-    for sample in samples:
+    print(f"Testing code for {len(samples)} sample{'s' if len(samples) > 1 else ''}")
+    for i, sample in enumerate(samples):
+        print(f"Testing sample #{i}: ", end="")
         input_str, output_str = sample
         output, exit_code = run_source_file(filepath, input_str)
         if exit_code != 0:
