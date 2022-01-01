@@ -106,14 +106,16 @@ def run_source_file(
             cwd=temp_dir_path,
         )
     else:
-        compile_process = Popen(
-            language_info.compile_command(filepath, temp_dir_path / "a.out"),
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-        )
-        exit_code = compile_process.wait()
-        if exit_code != 0:
-            raise ValueError(f"Compilation of source {filepath} failed")
+        execpath = temp_dir_path / "a.out"
+        if not execpath.exists():
+            compile_process = Popen(
+                language_info.compile_command(filepath, temp_dir_path / "a.out"),
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
+            exit_code = compile_process.wait()
+            if exit_code != 0:
+                raise ValueError(f"Compilation of source {filepath} failed")
         process = Popen(
             language_info.run_command(Path(), temp_dir_path / "a.out"),
             stdout=PIPE,

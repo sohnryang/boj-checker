@@ -57,8 +57,6 @@ def main(args: List[str]):
         except ValueError:
             print(f"{colorama.Fore.BLUE}Compilation Error{colorama.Style.RESET_ALL}")
             break
-        finally:
-            clean_temporary_files(filepath)
 
         if exit_code != 0:
             print(f"{colorama.Fore.RED}RTE{colorama.Style.RESET_ALL}")
@@ -71,3 +69,4 @@ def main(args: List[str]):
             print(f"{colorama.Style.RESET_ALL}\nActual output >>>{colorama.Fore.RED}")
             print(output)
             print(colorama.Style.RESET_ALL)
+    clean_temporary_files(filepath)
