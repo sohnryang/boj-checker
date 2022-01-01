@@ -44,7 +44,7 @@ def main(args: List[str]):
     except FileNotFoundError:
         config = CheckerConfig('{"language_configs": []}')
     print(f"Testing code for {len(samples)} sample{'s' if len(samples) > 1 else ''}")
-    for i, sample in enumerate(samples):
+    for i, sample in enumerate(samples, 1):
         print(f"Testing sample #{i}: ", end="")
         input_str, solution = sample
         try:
