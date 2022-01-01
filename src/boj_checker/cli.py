@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List
-from xdg import xdg_config_home
+from xdg import BaseDirectory
 
 from . import __version__
 from .config import CheckerConfig
@@ -36,7 +36,9 @@ def main(args: List[str]):
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
-    config_file_path = xdg_config_home() / "boj-checker/config.json"
+    config_file_path = (
+        Path(BaseDirectory.save_config_path("boj-checker")) / "config.json"
+    )
     try:
         config = CheckerConfig.fromfilepath(config_file_path)
     except FileNotFoundError:

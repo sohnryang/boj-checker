@@ -38,6 +38,6 @@ setup(
     packages=find_packages(where="src"),
     entry_points={"console_scripts": ["boj-checker=boj_checker:entry"]},
     python_requires=">=3.7",
-    install_requires=["requests", "colorama", "beautifulsoup4", "xdg"],
+    install_requires=["requests", "colorama", "beautifulsoup4", "pyxdg"],
     zip_safe=False,
 )
