@@ -133,6 +133,18 @@ class CheckerConfig:
             ] = LanguageConfig.fromdict(languageconfig_dict["config"])
 
     @classmethod
+    def fromdefault(cls) -> "CheckerConfig":
+        """Create CheckerConfig from default configuration. This is equivalent
+        of `CheckerConfig('{"language_configs": []}')`.
+
+        Returns
+        -------
+        CheckerConfig
+            Created object.
+        """
+        return cls('{"language_configs": []}')
+
+    @classmethod
     def fromfilepath(cls, filepath: Path) -> "CheckerConfig":
         """Create CheckerConfig from config file path.
 
