@@ -33,16 +33,26 @@ def main(args: List[str]):
     parser.add_argument(
         "filepath", metavar="FILE", type=str, help="The solution code to test"
     )
+    parser.add_argument(
+        "--no-config", action="store_true", help="Do not load config file"
+    )
+    parser.add_argument("-c", "--config-file", type=str, help="The path of config file")
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
-    config_file_path = (
-        Path(BaseDirectory.save_config_path("boj-checker")) / "config.json"
-    )
+    if parsed_args.config_file != None:
+        config_file_path = Path(parsed_args.config_file)
+    else:
+        config_file_path = (
+            Path(BaseDirectory.save_config_path("boj-checker")) / "config.json"
+        )
     try:
-        config = CheckerConfig.fromfilepath(config_file_path)
+        if parsed_args.no_config:
+            config = CheckerConfig.fromdefault()
+        else:
+            config = CheckerConfig.fromfilepath(config_file_path)
     except FileNotFoundError:
-        config = CheckerConfig('{"language_configs": []}')
+        config = CheckerConfig.fromdefault()
     print(f"Testing code for {len(samples)} sample{'s' if len(samples) > 1 else ''}")
     for i, sample in enumerate(samples, 1):
         print(f"Testing sample #{i}: ", end="")
