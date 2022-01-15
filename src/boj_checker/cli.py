@@ -9,6 +9,7 @@ from .boj_parser import fetch_sample_io
 
 import argparse
 import colorama
+import difflib
 import os
 
 
@@ -84,9 +85,16 @@ def main(args: List[str]):
             print(f"{colorama.Fore.GREEN}AC{colorama.Style.RESET_ALL}")
         else:
             print(f"{colorama.Fore.RED}WA{colorama.Style.RESET_ALL}")
-            print(f"Expected output >>>{colorama.Fore.GREEN}")
-            print(solution)
-            print(f"{colorama.Style.RESET_ALL}\nActual output >>>{colorama.Fore.RED}")
-            print(output)
-            print(colorama.Style.RESET_ALL)
+            print(
+                f"{colorama.Fore.YELLOW}<<<<<<< Output diff{colorama.Style.RESET_ALL}"
+            )
+            for diff in difflib.ndiff(output.splitlines(), solution.splitlines()):
+                if diff.startswith("-"):
+                    print(colorama.Fore.RED, end="")
+                elif diff.startswith("+"):
+                    print(colorama.Fore.GREEN, end="")
+                elif diff.startswith("?"):
+                    print(colorama.Fore.BLUE, end="")
+                print(f"{diff}{colorama.Style.RESET_ALL}")
+            print(f"{colorama.Fore.YELLOW}>>>>>>>{colorama.Style.RESET_ALL}\n")
     clean_temporary_files(filepath, Path(parsed_args.temp_directory))
