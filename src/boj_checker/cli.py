@@ -57,6 +57,10 @@ def main(args: List[str]):
         config_file_path = (
             Path(BaseDirectory.save_config_path("boj-checker")) / "config.json"
         )
+    if parsed_args.temp_directory != None:
+        temp_directory = Path(parsed_args.temp_directory)
+    else:
+        temp_directory = None
     try:
         if parsed_args.no_config:
             config = CheckerConfig.fromdefault()
@@ -70,10 +74,7 @@ def main(args: List[str]):
         input_str, solution = sample
         try:
             output, exit_code = run_source_file(
-                filepath,
-                input_str,
-                config.languageconfig_table,
-                Path(parsed_args.temp_directory),
+                filepath, input_str, config.languageconfig_table, temp_directory
             )
         except NotImplementedError:
             print(f"{colorama.Fore.BLUE}Unknown language{colorama.Style.RESET_ALL}")
@@ -101,4 +102,4 @@ def main(args: List[str]):
                         print(colorama.Fore.BLUE, end="")
                     print(f"{diff}{colorama.Style.RESET_ALL}")
                 print(f"{colorama.Fore.YELLOW}>>>>>>>{colorama.Style.RESET_ALL}\n")
-    clean_temporary_files(filepath, Path(parsed_args.temp_directory))
+    clean_temporary_files(filepath, temp_directory)
