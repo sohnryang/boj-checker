@@ -9,6 +9,7 @@ from .boj_parser import fetch_sample_io
 
 import argparse
 import colorama
+import os
 
 
 def main(args: List[str]):
@@ -24,7 +25,10 @@ def main(args: List[str]):
     int
         Exit code of the program
     """
-    colorama.init()
+    if os.getenv("NO_COLOR"):
+        colorama.init(strip=True, convert=False)
+    else:
+        colorama.init()
     parser = argparse.ArgumentParser(description="Check solutions against sample IO.")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
