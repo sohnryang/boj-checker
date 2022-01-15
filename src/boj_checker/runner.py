@@ -1,6 +1,6 @@
 from pathlib import Path
 from subprocess import DEVNULL, Popen, PIPE
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 from .config import LanguageConfig
 from .languageinfo import extension_lookup
@@ -45,7 +45,10 @@ def temporary_dir_root() -> Path:
 
 
 def run_source_file(
-    filepath: Path, input_str: str, user_language_config: Dict[str, LanguageConfig]
+    filepath: Path,
+    input_str: str,
+    user_language_config: Dict[str, LanguageConfig],
+    temp_dir: Union[Path, None] = None,
 ) -> Tuple[str, int]:
     """Run a source file from given path, getting input from `input_str`.
 
@@ -58,6 +61,9 @@ def run_source_file(
     user_language_config
         Dictionary mapping extension to LanguageConfig object, for custom
         settings.
+    temp_dir
+        The root of temporary directory. Defaults to `None`. If set to a value
+        other than `None`, `temporary_dir_root` is overridden.
 
     Returns
     -------
@@ -72,7 +78,11 @@ def run_source_file(
         If the compilation of the source code is failed.
     """
     dirname = generate_dirname(filepath)
-    temp_dir_path = temporary_dir_root() / dirname
+    if temp_dir != None:
+        temp_dir_path = temp_dir / dirname
+    else:
+        temp_dir_path = temporary_dir_root() / dirname
+
     try:
         os.mkdir(temp_dir_path)
     except FileExistsError:
@@ -128,16 +138,22 @@ def run_source_file(
     return (output.decode("utf-8"), exit_code)
 
 
-def clean_temporary_files(filepath: Path):
+def clean_temporary_files(filepath: Path, temp_dir: Union[Path, None] = None):
     """Clean up a temporary directory created when running source in `filepath`
 
     Parameters
     ----------
     filepath
         Path of the source.
+    temp_dir
+        The root of temporary directory. Defaults to `None`. If set to a value
+        other than `None`, `temporary_dir_root` is overridden.
     """
     dirname = generate_dirname(filepath)
-    temp_dir_path = temporary_dir_root() / dirname
+    if temp_dir != None:
+        temp_dir_path = temp_dir / dirname
+    else:
+        temp_dir_path = temporary_dir_root() / dirname
     for path, _, filenames in os.walk(temp_dir_path):
         for filename in filenames:
             full_path = os.path.join(path, filename)

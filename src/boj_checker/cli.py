@@ -41,6 +41,9 @@ def main(args: List[str]):
         "--no-config", action="store_true", help="Do not load config file"
     )
     parser.add_argument("-c", "--config-file", type=str, help="The path of config file")
+    parser.add_argument(
+        "-t", "--temp-directory", type=str, help="Path of temporary directory to use"
+    )
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
@@ -63,7 +66,10 @@ def main(args: List[str]):
         input_str, solution = sample
         try:
             output, exit_code = run_source_file(
-                filepath, input_str, config.languageconfig_table
+                filepath,
+                input_str,
+                config.languageconfig_table,
+                Path(parsed_args.temp_directory),
             )
         except NotImplementedError:
             print(f"{colorama.Fore.BLUE}Unknown language{colorama.Style.RESET_ALL}")
@@ -83,4 +89,4 @@ def main(args: List[str]):
             print(f"{colorama.Style.RESET_ALL}\nActual output >>>{colorama.Fore.RED}")
             print(output)
             print(colorama.Style.RESET_ALL)
-    clean_temporary_files(filepath)
+    clean_temporary_files(filepath, Path(parsed_args.temp_directory))
