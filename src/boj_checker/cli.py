@@ -45,6 +45,9 @@ def main(args: List[str]):
     parser.add_argument(
         "-t", "--temp-directory", type=str, help="Path of temporary directory to use"
     )
+    parser.add_argument(
+        "--no-diff", action="store_true", help="Do not show diffs on WA"
+    )
     parsed_args = parser.parse_args(args)
     samples = fetch_sample_io(parsed_args.probno)
     filepath = Path(parsed_args.filepath)
@@ -85,16 +88,17 @@ def main(args: List[str]):
             print(f"{colorama.Fore.GREEN}AC{colorama.Style.RESET_ALL}")
         else:
             print(f"{colorama.Fore.RED}WA{colorama.Style.RESET_ALL}")
-            print(
-                f"{colorama.Fore.YELLOW}<<<<<<< Output diff{colorama.Style.RESET_ALL}"
-            )
-            for diff in difflib.ndiff(output.splitlines(), solution.splitlines()):
-                if diff.startswith("-"):
-                    print(colorama.Fore.RED, end="")
-                elif diff.startswith("+"):
-                    print(colorama.Fore.GREEN, end="")
-                elif diff.startswith("?"):
-                    print(colorama.Fore.BLUE, end="")
-                print(f"{diff}{colorama.Style.RESET_ALL}")
-            print(f"{colorama.Fore.YELLOW}>>>>>>>{colorama.Style.RESET_ALL}\n")
+            if not parsed_args.no_diff:
+                print(
+                    f"{colorama.Fore.YELLOW}<<<<<<< Output diff{colorama.Style.RESET_ALL}"
+                )
+                for diff in difflib.ndiff(output.splitlines(), solution.splitlines()):
+                    if diff.startswith("-"):
+                        print(colorama.Fore.RED, end="")
+                    elif diff.startswith("+"):
+                        print(colorama.Fore.GREEN, end="")
+                    elif diff.startswith("?"):
+                        print(colorama.Fore.BLUE, end="")
+                    print(f"{diff}{colorama.Style.RESET_ALL}")
+                print(f"{colorama.Fore.YELLOW}>>>>>>>{colorama.Style.RESET_ALL}\n")
     clean_temporary_files(filepath, Path(parsed_args.temp_directory))
